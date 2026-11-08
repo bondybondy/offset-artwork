@@ -1,0 +1,877 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>偏移 — OFFSET / An Experiment in Seeing</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#27303a;background:#f4f3ef}*{box-sizing:border-box}body{margin:0}.shell{max-width:1140px;margin:auto;padding:22px 16px 50px}.title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}h1{font-size:29px;margin:0}.pill{border-radius:40px;background:#e8eef3;padding:5px 10px;font-size:12px}.intro{color:#65717a;font-size:14px;line-height:1.8;max-width:960px;margin:8px 0 19px}.layout{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(310px,.92fr);gap:16px;align-items:start}.card{padding:17px;background:#fff;border:1px solid #e0e2e3;border-radius:16px}.cardhead,.head{display:flex;justify-content:space-between;gap:12px;align-items:center}.muted{color:#84909a;font-size:12px}.photoWrap{position:relative;margin-top:11px;max-width:600px;overflow:hidden;border-radius:12px;background:#d8d9d7}.photoWrap canvas{width:100%;height:auto;display:block}.photoWrap #focus{position:absolute;inset:0;pointer-events:none}.onPhoto{position:absolute;left:11px;top:11px;background:rgba(255,255,255,.9);border-radius:30px;font-size:12px;padding:6px 10px}.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:17px 0 23px}.progress span{height:5px;background:#e6eaec;border-radius:4px}.progress span.done{background:#608aa8}.kicker{font-size:12px;color:#8a9299;letter-spacing:.08em}.question{font-size:24px;font-weight:700;line-height:1.35;margin:11px 0}.explain{font-size:14px;color:#70777e;line-height:1.8}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:20px 0 10px}button{font:inherit;cursor:pointer;background:white;color:#24313b;border:1px solid #cdd4d9;border-radius:10px;padding:12px 14px}button:hover{background:#f2f6f9}button:disabled{opacity:.5;cursor:not-allowed}.buttons button{font-size:19px;font-weight:700;padding:25px 8px}.primary{background:#2e5069;color:white;border-color:#2e5069}.primary:hover{background:#3a6380}button.small{font-size:12px;padding:8px 10px}.hidden{display:none!important}.roundList{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}.chip{font-size:12px;padding:6px 10px;border-radius:18px;background:#f1f3f5;border:1px solid #e1e5e8}.controls{margin-top:18px;border-top:1px solid #e7e9e9;padding-top:15px}.range{width:100%;accent-color:#6485a0}.historyhead{display:flex;align-items:center;justify-content:space-between;gap:8px}.detail{font-size:12px;line-height:1.7;color:#65717b;margin:8px 0}.status{font-size:12px;color:#667982;min-height:19px}.stats{display:grid;gap:7px;margin-top:16px}.stat{display:grid;grid-template-columns:88px 1fr 40px;gap:8px;align-items:center;font-size:12px}.rail{height:8px;border-radius:8px;background:#eef1f3;overflow:hidden}.bar{height:100%;background:#6f95ac}.tools{display:flex;gap:8px;flex-wrap:wrap}.asideSep{border:0;border-top:1px solid #e7e9ed;margin:18px 0}.legend{font-size:12px;color:#65717b;line-height:1.7}.toggle{font-size:13px;display:flex;gap:7px;align-items:center}.resultHint{padding:12px;background:#f4f7f9;border-radius:9px;line-height:1.7;font-size:13px;color:#556672;margin:12px 0 15px}@media(max-width:760px){.layout{grid-template-columns:1fr}.shell{padding:15px 12px}.card{padding:13px}.photoWrap{max-width:100%}}
+
+.rankTitle{font-size:14px;font-weight:700;margin:15px 0 10px}.rankTitle .muted{font-weight:400}.rankList{display:grid;gap:6px;margin:12px 0}.rankItem{width:100%;border-radius:9px;border:1px solid #e1e7eb;background:#fafbfc;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer}.rankItem:hover,.rankItem.active{border-color:#6b93b2;background:#eef5fa}.rankItem.topRank{border-color:#d3e2eb;background:#f4f9fc}.rankItem.topRank .rankNumber{font-weight:750;color:#416f8c}.rankItem.topRank .rankFill{background:#648ca6}.rankNumber{color:#708391;font-size:12px;min-width:22px}.rankName{font-size:12px;min-width:85px;flex:0 0 85px}.rankRail{height:8px;flex:1;background:#e8edf1;border-radius:10px;overflow:hidden}.rankFill{height:100%;background:#648ca6}.rankPercent{width:36px;text-align:right;font-size:12px;color:#425a6b}.explanation{font-size:12px;line-height:1.8;color:#4d606d;padding:12px;border-radius:9px;background:#f2f6f8;margin:10px 0 17px}.explanation strong{color:#213c51}.explainGrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:8px}.explainChoice{border-bottom:1px solid #dfe6eb;padding:4px 0}.explScore{float:right;font-weight:700}.scoreNote{color:#83909b;font-size:11px;margin-top:7px}
+
+.uploadBar{background:#fff;border:1px solid #e0e2e3;border-radius:14px;padding:14px 17px;margin-bottom:16px;display:flex;flex-wrap:wrap;align-items:center;gap:11px}
+.uploadBar input[type=file]{font-size:13px;max-width:250px}.uploadHelp{font-size:12px;color:#61717d;line-height:1.6;flex-basis:100%}
+#editCanvas{position:absolute;inset:0;width:100%;height:auto;touch-action:none;cursor:crosshair;display:none}
+#editCanvas.active{display:block}
+#editPanel{padding:12px;margin-top:12px;background:#f3f7fa;border-radius:10px;display:none}
+#editPanel.active{display:block}
+.editRow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:9px 0;font-size:13px}
+.editRow label{min-width:70px;color:#546575}.editRow select,.editRow input[type=text]{font:inherit;padding:7px;border:1px solid #bccbd5;border-radius:7px;background:white;flex:1;min-width:105px}
+.editRow input[type=range]{flex:1}.editActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.editActions button{font-size:12px;padding:8px 10px}
+ .boundaryToggle{display:flex;align-items:center;gap:8px;margin-top:12px;margin-bottom:9px;font-size:14px;color:#263d50;cursor:pointer}.boundaryToggle input{width:18px;height:18px;accent-color:#2466af}.photoWrap{margin-top:3px}
+
+.samNote{margin-top:9px;padding:10px 12px;border-radius:9px;background:#f4f7f9;color:#4e6371;font-size:12px;line-height:1.65}.samNote strong{color:#28465a}
+
+.auditPanel{background:#f8fafb;border:1px solid #dce6eb;border-radius:12px;padding:14px;margin:14px 0 19px}.auditLegend{font-size:12px;color:#566a78;line-height:1.8;margin:8px 0 10px}.auditTableWrap{overflow:auto}.auditTable{width:100%;border-collapse:collapse;font-size:12px;text-align:left;white-space:nowrap}.auditTable th{padding:8px 6px;color:#74818a;background:#ebf1f4;font-weight:600}.auditTable td{padding:8px 6px;border-bottom:1px solid #e5ecef}.auditTable tbody tr{cursor:pointer}.auditTable tbody tr:hover,.auditTable tbody tr.current{background:#eaf3f8}.auditTable .mName{font-weight:650}.auditDetail{background:#eef4f7;border-radius:8px;padding:11px;margin-top:12px;font-size:12px;line-height:1.8;color:#3f5665}.auditDetail .auditChips{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}.auditDetail .auditChips span{padding:2px 7px;border-radius:14px;background:white;border:1px solid #dce5e9}.auditWarn{color:#8a512b;font-weight:600}
+
+@media(max-width:760px){
+ .shell{padding:10px 8px 28px}
+ .layout{grid-template-columns:minmax(0,1fr)}
+ .card{padding:11px}
+ .uploadBar{padding:12px;gap:8px}
+ .uploadBar input[type=file]{max-width:100%;width:100%}
+ .photoWrap{margin-left:auto;margin-right:auto}
+ .rankItem{min-height:39px}
+ .buttons button{padding:20px 8px}
+ #mobileDemo{background:#f1f5f8}
+}
+@media(max-width:560px){.buttons{grid-template-columns:1fr 1fr 1fr;gap:6px}.buttons button{padding:14px 3px;font-size:13px;min-height:62px}}
+.buttons .neutralChoice{background:#f3f5f6;border-color:#c5ccd2;color:#596570}
+
+#emptyState{position:absolute;inset:0;z-index:3;background:#edf0f0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#495968;text-align:center;padding:20px;pointer-events:none}
+#emptyState strong{font-size:19px}#emptyState span:last-child{font-size:13px;color:#75828c}
+.segLegend{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.segLegend button{font-size:12px;padding:7px 9px;border:1px solid #d5dce0;border-radius:10px;background:#fff;color:#344650;cursor:pointer}
+.segLegend button.active{border-color:#1c3444;background:#e1edf5}
+.segLegend .dot{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.photoWrap{min-height:300px}.photoWrap canvas{position:relative;z-index:1}.photoWrap #editCanvas{position:absolute;inset:0;z-index:2}.photoWrap .onPhoto{z-index:2;pointer-events:none}
+
+/* V44 | editorial interaction — design-only restyle; V43 score/segmentation retained */
+:root{font-family:Arial,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:#111;background:#fdfdfb}
+body{background:#fdfdfb;color:#111;letter-spacing:-.01em}
+.shell{max-width:1460px;margin:0 auto;padding:23px clamp(18px,4.6vw,78px) 90px}
+.editorialHead{margin:0 0 38px}
+.topRule{display:flex;justify-content:space-between;gap:10px;border-top:2px solid #101010;padding-top:8px;font-size:10px;font-weight:700;letter-spacing:.06em}
+.title{display:flex;align-items:end;justify-content:space-between;gap:20px;border-bottom:1px solid #111;padding:25px 0 19px}
+.title h1{font-size:clamp(68px,11vw,158px);font-weight:500;letter-spacing:-.105em;line-height:.88;white-space:nowrap}
+.enTitle{font-size:clamp(21px,3vw,43px);font-weight:400;letter-spacing:-.045em;display:inline-block;vertical-align:top;margin:9px 0 0 22px}
+.pill{align-self:end;border:0;background:none;border-radius:0;padding:0;font-size:11px;font-weight:700;letter-spacing:.04em;color:#413ba0;white-space:nowrap}
+.intro{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(18px,2.1vw,29px);font-weight:400;line-height:1.5;max-width:100%;margin:15px 0 29px;color:#111}
+.intro em{font-style:normal;text-decoration:underline;text-decoration-color:#4d47b5;text-decoration-thickness:1.5px;text-underline-offset:6px}
+.headerBottom{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:10px;letter-spacing:.045em;color:#4f49a3;border-bottom:1px solid #bdbdb9;padding-bottom:9px}
+.uploadBar{display:grid;grid-template-columns:minmax(180px,.95fr) minmax(150px,1.2fr) auto auto;align-items:center;gap:13px;margin:0 0 29px;padding:20px 0;border:0;border-bottom:1px solid #111;background:transparent;border-radius:0}
+.uploadBar strong{font-size:17px;font-weight:600}.numberLabel{color:#514bb5;font-size:13px;padding-right:9px}
+.uploadBar input[type=file]{max-width:100%;font-size:12px;color:#444}
+.uploadBar .uploadHelp,.uploadBar details{grid-column:1 / -1;max-width:900px}
+.uploadBar .uploadHelp{color:#626262;font-size:11px;line-height:1.5}
+.uploadBar details{margin-top:2px!important;padding:10px 0!important;border:0!important;border-top:1px solid #d6d6d1!important;border-radius:0!important;background:transparent!important}
+.uploadBar details summary{font-size:11px!important;letter-spacing:.04em;font-weight:500!important;color:#4f49a3}
+.layout{grid-template-columns:minmax(0,1.26fr) minmax(320px,.84fr);gap:clamp(28px,5vw,90px);align-items:start}
+.card{border:0;border-radius:0;background:none;padding:0;min-width:0}
+.cardhead,.head{border-top:2px solid #111;padding-top:9px;font-size:12px;letter-spacing:.04em;text-transform:none}
+.cardhead b,.head b{font-size:12px;font-weight:700}
+.muted,.kicker{color:#625fac;font-size:11px;letter-spacing:.06em}
+.photoWrap{max-width:none;border-radius:0;background:#e7e7e4;margin-top:18px;min-height:400px;border:1px solid #e3e3df}
+#emptyState{background:#f3f3f0;color:#171717;border:0;gap:15px}
+#emptyState strong{font-family:Georgia,"Noto Serif TC",serif;font-weight:400;font-size:clamp(23px,3vw,37px)}
+#emptyState span:first-child{font-size:50px!important;font-weight:200;color:#4f49a3}
+#emptyState span:last-child{font-size:10px;letter-spacing:.12em;color:#5d5d5d}
+.onPhoto{left:0;top:0;background:rgba(255,255,255,.92);border-radius:0;font-size:10px;letter-spacing:.03em;padding:8px 10px}
+.boundaryToggle{margin-top:15px;margin-bottom:11px;color:#363636;font-size:12px;font-weight:400}
+.boundaryToggle input{accent-color:#514bb5;width:16px;height:16px}
+.progress{gap:3px;margin:14px 0 42px}.progress span{border-radius:0;height:2px;background:#dadad6}.progress span.done{background:#514bb5}
+.question{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(33px,3.7vw,60px);font-weight:400;line-height:1.2;letter-spacing:-.04em;white-space:pre-line;margin:22px 0 16px}
+.explain{color:#747474;font-size:12px;line-height:1.8;max-width:390px}
+.buttons{gap:0;margin:30px 0 8px;border-top:1px solid #222;border-bottom:1px solid #222}
+.buttons button{border:0;border-right:1px solid #bfc0c4;font-family:Georgia,"Noto Serif TC",serif;background:transparent;color:#111;border-radius:0;font-size:clamp(13px,1.4vw,20px);font-weight:400;min-height:113px;padding:20px 10px;transition:background .2s,color .2s}
+.buttons button:last-child{border-right:0}
+.buttons button:hover{background:#ecebff;color:#39349e}
+.buttons .neutralChoice{background:transparent;color:#696969;border-color:#bfc0c4}
+.buttons .neutralChoice:hover{background:#ecebff;color:#39349e}
+button{border-radius:0;border:1px solid #111;background:transparent;color:#111;transition:background .15s,color .15s}
+button:hover{background:#eeeefa}
+button.primary,.primary{background:#111;border-color:#111;color:white}
+button.primary:hover,.primary:hover{background:#4b45ad;border-color:#4b45ad}
+button.small{font-size:11px;padding:11px 13px}
+#aiSegment{background:#514bb5;border-color:#514bb5;color:white}
+#aiSegment:hover{background:#35308b}
+#mobileDemo{background:transparent!important;border:1px solid #bbb!important;color:#333!important}
+#restart{border:0;padding:0;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#514bb5;color:#514bb5;font-size:11px}
+#chooseStatus{font-size:11px;color:#727272;margin-top:12px}
+.controls{border-top:1px solid #111;margin-top:23px;padding-top:15px}
+.historyhead b{font-size:14px}.range{accent-color:#514bb5}
+.tools{gap:4px}.tools button{font-size:11px;border-radius:0}
+.detail,.legend,.auditLegend,.status{color:#656565;line-height:1.7;font-size:11px}
+.resultHint,.explanation,.auditPanel,.auditDetail,#editPanel,.samNote{background:transparent;border-radius:0;border:0;padding:13px 0;border-top:1px solid #d8d8d6;color:#4b4b4b}
+.rankTitle{border-top:1px solid #111;padding-top:12px;margin:25px 0 12px;font-size:14px;letter-spacing:.01em}
+.rankItem{background:transparent;border:0;border-bottom:1px solid #d6d6d2;border-radius:0;padding:11px 4px;gap:9px}
+.rankItem:hover,.rankItem.active,.rankItem.topRank{background:#f1f0fc;border-color:#b8b5e6}
+.rankItem.topRank .rankNumber{color:#514bb5}.rankItem.topRank .rankFill,.rankFill{background:#514bb5}
+.rankRail{background:#e8e7e3;border-radius:0;height:3px}.rankPercent{color:#4e4e4e}.rankName{color:#222}
+.explanation strong{color:#111}.explainGrid{grid-template-columns:1fr 1fr}
+.auditDisclosure{border-top:1px solid #111;border-bottom:1px solid #111;margin:24px 0}
+.auditDisclosure summary{cursor:pointer;list-style:none;font-size:13px;font-weight:600;padding:16px 0;display:flex;justify-content:space-between;gap:10px}
+.auditDisclosure summary::-webkit-details-marker{display:none}
+.auditDisclosure summary span{font-size:10px;letter-spacing:.06em;color:#514bb5;font-weight:400}
+.auditPanel{margin:0;padding:10px 0 20px;border-top:1px solid #e0e0df}
+.auditTable th{color:#4b48a2;background:#f0effa;border-bottom:1px solid #c3c0e4}
+.auditTable td{border-bottom:1px solid #e3e3df}
+.auditTable tbody tr:hover,.auditTable tbody tr.current{background:#eeedfa}
+.segLegend{gap:5px}.segLegend button{border-radius:0;border:1px solid #d1d1ce;font-size:10px;padding:7px}
+.segLegend button.active{background:#f0effa;border-color:#514bb5}
+.chip{border-radius:0;background:transparent;border:1px solid #c4c4c0;font-size:11px}
+#reveal{font-family:Georgia,"Noto Serif TC",serif;font-size:20px;font-weight:400;padding:22px 14px;letter-spacing:.015em}
+#finished .question{font-size:clamp(30px,3.4vw,48px)}
+#resultControls{margin-top:25px}
+#editPanel{background:#fff}#editPanel input,#editPanel select{border-radius:0}
+/* Avoid embedded image preview obscuring canvas; legacy JS controls the canvas. */
+#photoPreviewImg{display:none!important}
+@media(max-width:900px){
+ .layout{grid-template-columns:minmax(0,1fr);gap:36px}
+ .title h1{font-size:clamp(65px,12vw,110px)}
+ .photoWrap{max-width:750px}
+ .uploadBar{grid-template-columns:minmax(0,1fr) auto auto}
+ .uploadBar strong{grid-column:1/-1}
+}
+@media(max-width:560px){
+ .shell{padding:14px 16px 55px}
+ .topRule{font-size:8px}.topRule span:last-child{max-width:150px;text-align:right}
+ .title{align-items:flex-start;display:block;padding:23px 0 13px}
+ .title h1{font-size:clamp(59px,17vw,86px)}
+ .enTitle{font-size:20px;margin:9px 0 0 9px}
+ .pill{display:block;margin-top:12px;font-size:9px}
+ .intro{font-size:19px;line-height:1.6;margin:16px 0 23px}
+ .headerBottom{font-size:8px;line-height:1.5}
+ .headerBottom span:first-child{max-width:215px}
+ .uploadBar{grid-template-columns:1fr 1fr;gap:9px;padding:12px 0 17px}
+ .uploadBar strong,.uploadBar input[type=file]{grid-column:1/-1}
+ .uploadBar .small{min-height:44px}
+ .photoWrap{min-height:280px}
+ .buttons button{min-height:89px;padding:14px 4px;font-size:13px}
+ .question{font-size:35px}
+ .rankName{flex:0 0 74px;min-width:74px}
+ .rankNumber{min-width:18px}
+ .rankPercent{width:31px}
+ .tools button{min-height:38px}
+}
+
+</style></head><body><main class="shell"><header class="editorialHead"><div class="topRule"><span>FIELD STUDY / 001</span><span>AN EXPERIMENT IN SEEING · 2026</span></div><div class="title"><h1>偏移<span class="enTitle">OFFSET</span></h1><span class="pill">INTERACTIVE WORK / V46</span></div><p class="intro">我們如何在一次次選擇之中，<em>看見</em>某些事物，<em>忽略</em>其他？</p><div class="headerBottom"><span>01 — 選取影像　/　02 — 觀看選擇　/　03 — 觀察偏移</span><span>↓ SCROLL TO BEGIN</span></div></header><div class="uploadBar"><strong><span class="numberLabel">01 /</span> 選取一個場域</strong><input id="photoUpload" type="file" accept="image/*,.heic,.heif,image/heic,image/heif" aria-label="上傳照片"/><button class="small primary" id="aiSegment" type="button">分析影像 ↗</button><button class="small" id="mobileDemo" type="button">試用分區</button><button class="small" id="editToggle" type="button" style="display:none">編輯／修正分區</button><span class="uploadHelp" id="uploadStatus">請先上傳 JPG、PNG、HEIC／HEIF 照片，再按「分析影像」。HEIC 首次轉檔可能需要網路。</span><span class="uploadHelp" style="display:block;margin-top:6px;color:#8a5a2b">若你是在 ChatGPT 內建預覽器開啟，仍可能比 Safari 不穩。建議優先用 Safari 開啟。</span><details style="margin-top:12px;padding:12px;border:1px solid #dce3e8;border-radius:12px;background:#fbfcfe"><summary style="cursor:pointer;font-weight:700">分類字典與計分方法 / METHODOLOGY</summary><div id="dictionaryList" style="max-height:260px;overflow:auto;margin-top:10px;font-size:13px;line-height:1.8"></div><p class="detail">四組語意選擇由設計者事先設定類別傾向（−2～+2）；整體／局部依上傳照片分割面積動態計算。這些不是 AI 對本張照片的情境判斷。</p></details></div><div class="layout"><section class="card"><div class="cardhead"><b>IMAGE / 場域影像</b><span class="muted" id="imageLabel">原始照片</span></div><label class="toggle boundaryToggle"><input type="checkbox" id="showMask"/> <strong>查看分類邊界</strong></label><div class="photoWrap"><div id="emptyState"><span style="font-size:37px">＋</span><strong>選取影像，開始觀看</strong><span>PHOTO / 影像尚未載入</span></div><img id="photoPreviewImg" alt="原圖預覽" style="display:none;width:100%;height:auto;border-radius:18px;position:absolute;inset:0;object-fit:contain;background:#ddd"/><canvas id="photo" width="600" height="800"></canvas><canvas id="focus" width="600" height="800" aria-hidden="true" style="display:none"></canvas><canvas id="editCanvas" width="600" height="800" aria-label="塗抹物件分區"></canvas><span class="onPhoto" id="photoTag">選擇階段 · 原始影像</span></div><div id="segLegend" class="segLegend" style="display:none"></div><div id="editPanel"><b>物件分區編輯</b><p class="detail">在照片上拖曳塗抹，將畫面位置指定給選取的物件。不同顏色僅用於編輯，不會出現在影像結果。編輯分區可用來檢查遮罩；測試版的分類傾向需對應指定的分類類型。</p>
+<div class="editRow"><label for="regionSelect">目前物件</label><select id="regionSelect"></select></div>
+<div class="editRow"><label for="regionName">物件名稱</label><input id="regionName" type="text" maxlength="18"/></div>
+<div class="editRow"><label for="profileSelect">分類樣板</label><select id="profileSelect"></select></div>
+<div class="editRow"><label for="brushSize">筆刷大小</label><input id="brushSize" type="range" min="8" max="110" value="42"/><span id="brushValue">42 px</span></div>
+<div class="editActions"><button id="fillRegion" type="button">以目前物件填滿照片</button><button id="resetGrid" type="button">重設十區粗分</button><button id="editDone" class="primary" type="button">完成分區・開始選擇</button></div>
+</div><div id="resultControls" class="controls hidden"><div class="historyhead"><b>選擇如何形成可見性</b><span class="muted" id="stageCount">0 / 5</span></div><input class="range" id="history" type="range" min="0" max="5" step="1" value="0"/><div class="tools" style="margin-top:10px"><button class="small primary" id="play">▶ 觀看變化</button><button class="small" id="previous">← 上一步</button><button class="small" id="next">下一步 →</button><button class="small" id="compare">按住查看原圖</button><button class="small" id="download">輸出 PNG</button></div><div class="status" id="status">原始照片</div><div class="controls" style="margin-top:12px"><div class="historyhead"><span style="font-size:13px">偏移強度</span><span class="muted" id="strengthNumber">1.0×</span></div><input class="range" id="strength" type="range" min="0.4" max="3.2" step="0.1" value="1.0"/></div></div></section><section class="card"><div class="head"><div class="kicker">02 / FIVE DECISIONS</div><button class="small" id="restart">重來</button></div><div class="progress" id="progress"></div><div id="selection"><div class="kicker" id="round">ROUND 1 / 5</div><div class="question">你會如何
+觀看這個場域？</div><div class="explain">五個觀看框架。每次選擇一種方向，或不以此區分。</div><div class="buttons" id="choiceButtons"></div><div class="detail" id="chooseStatus">目前照片保持原樣。</div></div><div id="finished" class="hidden"><div class="question">觀看完成</div><div class="resultHint">資訊保留等級直接依累積分數計算，不再依名次分配固定百分比。五次選擇已決定各場域元素的分數與排序。先查看哪些物件被排到前面，點選物件可以查看五次選擇的分數影響，照片本身不出現框線。接著再揭示照片。</div><div id="chosenConcepts" class="roundList"></div><details class="auditDisclosure"><summary>分類與分數詳情 <span>↗ VIEW THE ARCHIVE</span></summary><section class="auditPanel" id="auditPanel" aria-label="AI 分類結果">
+  <div class="head"><b>ARCHIVE / 分類與計分紀錄</b><span class="muted" id="auditSource">分區來源</span></div>
+  <p class="detail" id="auditSummary"></p>
+  <div class="auditLegend">下表顯示系統實際用來排名的區域，而不是宣稱照片中只存在這些物件。分數直接換算保留值，所以「其他」即使被排到後半段，其保留值仍按原始分數計算。<strong>分類前三組及第五組由程式預設類別傾向；第四組根據實際面積，並非 AI 判斷你的偏好。</strong></div>
+  <div class="auditTableWrap"><table class="auditTable"><thead><tr><th>名次／類別</th><th>畫面佔比</th><th>累積分數</th><th>保留等級</th></tr></thead><tbody id="auditRows"></tbody></table></div>
+  <p class="detail" id="auditLimits"></p>
+  <div class="auditDetail" id="auditDetail">選取上方一個類別，即可查看五次選擇對它的加分。</div>
+</section></details><div class="rankTitle">VISIBILITY / 物件可見性 <span class="muted">點選物件查看計分；未辨識區域仍限後半排名；保留值依原始分數</span></div><div id="previewRank" class="rankList"></div><div id="previewExplain" class="explanation">選擇一個物件，了解它為什麼排在這裡。</div><button id="reveal" class="primary" style="width:100%">揭示偏移影像 ↗</button><p class="detail">揭示後可隨時拖動滑桿，觀看每一次選擇如何更新排名和影像。</p></div><div id="scoresPanel" class="hidden"><hr class="asideSep"/><div class="head"><b>場域可見性排序</b><span class="muted" id="stageTitle">原始</span></div><p class="detail">每次選擇依類別屬性加 −2 到 +2 分；「整體／局部」由分割面積排名計算，「不以此區分」加 0 分。資訊保留等級直接以累積分數換算：0 分為 70%，每 +1 分增加 6%，每 −1 分減少 6%，介於 10%～100%。五次全選「不以此區分」則保留原圖。這是創作者設定的視覺規則，不是 AI 判定。</p><div class="rankList" id="stats"></div><div id="resultAudit" class="auditPanel"></div><div id="resultExplain" class="explanation">點選排名或照片中的物件，查看分類分數；不會在影像上加框線。</div></div></section></div><p class="detail" style="margin-top:45px;border-top:1px solid #111;padding-top:12px">METHOD NOTE — 上傳照片後，AI 使用 SegFormer 語意分割建立區域。分類詞彙與區域間的 −2～+2 分對照仍由程式規則指定（整體／局部採用實際面積），不等於 AI 理解使用者的觀看意圖。模型可能漏掉小物件，結果需要以「顯示分類邊界」檢查。</p></main>
+<script>
+const PHOTO="";
+const REGION="";
+const NAMES=["天空與背景", "左側草叢", "右側植被", "頭部與帽子", "黑色上衣", "手臂與雙手", "牛仔褲", "鞋子", "西瓜", "地面"];
+const PAIRS=[["自然","人造"],["移動","靜止"],["日常使用","環境背景"],["整體","局部"],["永久","暫時"]];
+const NEUTRAL="不以此區分";
+const STEPS=5;
+const DEFAULT_REL={"自然": [2, 2, 2, 2, 2, 2, 1, 0, 2, 2], "人造": [0, 0, 0, 1, 2, 0, 2, 2, 0, 1], "有機": [0, 2, 2, 2, 0, 2, 0, 0, 2, 1], "無機": [1, 0, 0, 0, 1, 0, 2, 2, 0, 2], "柔軟": [1, 2, 2, 1, 2, 2, 1, 0, 2, 1], "堅硬": [0, 0, 0, 1, 0, 0, 1, 2, 1, 2], "固定": [1, 2, 2, 0, 0, 0, 0, 0, 0, 2], "可移動": [0, 1, 1, 2, 2, 2, 2, 2, 2, 0], "持續": [2, 2, 2, 1, 1, 1, 1, 1, 0, 2], "暫時": [0, 1, 1, 2, 2, 2, 2, 2, 2, 1], "使用": [0, 1, 1, 2, 2, 2, 2, 2, 2, 2], "裝飾": [2, 1, 1, 1, 2, 0, 1, 1, 2, 0], "整潔": [2, 1, 1, 1, 2, 1, 1, 1, 1, 1], "雜亂": [0, 2, 2, 1, 0, 1, 1, 1, 1, 2], "顯眼": [2, 2, 1, 2, 2, 2, 2, 2, 2, 0], "隱蔽": [0, 1, 2, 0, 0, 0, 0, 0, 0, 1], "生活": [1, 2, 2, 2, 2, 2, 2, 2, 2, 1], "交通": [0, 0, 0, 0, 0, 0, 1, 1, 0, 1], "獨立": [1, 1, 1, 2, 1, 2, 1, 2, 2, 1], "依附": [0, 2, 2, 1, 2, 1, 2, 1, 1, 1]};
+const REL=Object.fromEntries(Object.entries(DEFAULT_REL).map(([key,vals])=>[key,vals.slice()]));
+const DEFAULT_NAMES=NAMES.slice();
+const PROFILE_INDEX=Array.from({length:10},(_,i)=>i);
+let activeRegions=Array.from({length:10},(_,i)=>i);
+
+const COLORS=[[66,145,89],[142,99,68],[74,183,91],[103,151,219],[157,128,187],[193,163,129],[237,149,100],[219,86,81],[153,168,179],[218,186,94]];
+const MOBILE=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||matchMedia("(max-width: 760px)").matches;let W=600,H=800;const cv=document.getElementById('photo'),ctx=cv.getContext('2d',{willReadFrequently:true});
+const image=new Image(),maskImage=new Image(); let imageOK=false,maskOK=false,ready=false,original=null,maskIds=null;
+let segmentationReady=false;let selectedObject=0;let answers=[],frames=[],stage=0,phase='select',isPlaying=false,visualStrength=1.0,playToken=0,showOriginal=false,showMask=false;
+const $=id=>document.getElementById(id),clamp=v=>Math.max(0,Math.min(1,v));
+const bayer=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+// V43：類別辨識與選擇累積分數不變，但資訊保留值直接由分數決定。
+// 固定比例避免因照片辨識到的類別數量不同而改變同一分數的清晰度。
+// 0 分 = 70%、+1 分 = +6%、-1 分 = -6%；限制在 10%～100%。
+// 所有已作答皆為「不以此區分」時，保留完整原圖。
+function scoreToRetention(score,allNeutral){
+ if(allNeutral)return 100;
+ return Math.max(10,Math.min(100,Math.round(70+score*6)));
+}
+function areaBias(){
+ const counts=new Array(10).fill(0);
+ if(maskIds)for(let k=0;k<maskIds.length;k++)if(activeRegions.includes(maskIds[k]))counts[maskIds[k]]++;
+ const order=activeRegions.slice().filter(id=>NAMES[id]!=='其他／尚未辨識').sort((a,b)=>counts[a]-counts[b]||a-b);
+ const bias=new Array(10).fill(0);
+ // -2 for the smallest class, +2 for largest; use the actual SegFormer mask area.
+ for(let i=0;i<order.length;i++)bias[order[i]]=order.length===1?0:Math.round(-2+4*i/(order.length-1));
+ return bias;
+}
+function contribution(term,id,areas=null){
+ if(term===NEUTRAL || NAMES[id]==='其他／尚未辨識')return 0;
+ const row=PAIRS.findIndex(p=>p.includes(term));if(row<0)return 0;
+ // 第四題（整體／局部）採用面積；第五題（永久／暫時）使用 axes 第四欄（索引 3）。
+ const val=row===3?(areas??areaBias())[id]:(axesByRegion[id]?.[row===4?3:row]??0);
+ return term===PAIRS[row][0]?val:-val;
+}
+function ranking(count){
+ const n=Math.min(STEPS,Math.max(0,count));
+ const scores=Array(10).fill(0);
+ const areas=answers.slice(0,n).includes(PAIRS[3][0])||answers.slice(0,n).includes(PAIRS[3][1])?areaBias():null;
+ for(let t=0;t<n;t++)for(const id of activeRegions)scores[id]+=contribution(answers[t],id,areas);
+ const ids=activeRegions.slice().sort((a,b)=>scores[b]-scores[a]||a-b);
+ const unknownIds=ids.filter(id=>NAMES[id]==='其他／尚未辨識');
+ if(unknownIds.length && ids.length>1){
+  const named=ids.filter(id=>NAMES[id]!=='其他／尚未辨識');const firstBackRank=Math.ceil(ids.length/2);
+  ids.splice(0,ids.length,...named);
+  for(const id of unknownIds){let target=0;while(target<ids.length&&(scores[ids[target]]>scores[id]||(scores[ids[target]]===scores[id]&&ids[target]<id)))target++;ids.splice(Math.max(firstBackRank,target),0,id);}
+ }
+ const rankById=Array(10).fill(-1);ids.forEach((id,pos)=>rankById[id]=pos);
+ const allNeutral=answers.slice(0,n).every(x=>x===NEUTRAL);
+ const retain=scores.map((score,id)=>activeRegions.includes(id)?scoreToRetention(score,allNeutral):0);
+ return {scores,ids,rankById,retain,allNeutral};
+}
+// V20｜小尺度資訊偏移：前三名無失真；排名愈後，局部取樣愈偏離原座標。
+// 強度主要由取樣錯位及細節混合決定，而不是無限制放大馬賽克方塊。
+function makeFrame(i){
+ const output=new ImageData(new Uint8ClampedArray(original),W,H);
+ if(i===0)return output;
+ const dest=output.data,ranks=ranking(i),progress=answers.slice(0,i).filter(a=>a!==NEUTRAL).length/STEPS;
+ const styles=ranks.rankById.map((rank,id)=>{
+   const retain=ranks.retain[id];
+   if(rank<0 || retain>=100)return {size:1,offset:0,mix:0,levels:256};
+   // V43：直接以該類別的分數換算保留等級，而不是依排名決定失真程度。
+   const f=clamp((100-retain)/90);
+   const strength=Math.min(2.0,visualStrength)*progress;
+   const amount=Math.min(1,f*strength);
+   // 色塊只從 2–8px 微幅增大，主變化是局部位置錯開。
+   return {size:Math.max(2,Math.round(2+amount*6)),offset:Math.round(amount*11),
+     mix:Math.min(.88,amount*.88),levels:Math.max(12,Math.round(64-amount*48))};
+ });
+ // 缓存每個區域／色塊的平均來源顏色，避免畫面出現密集高頻雜訊。
+ const tileColors=new Map();
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+   const k=y*W+x,zone=maskIds[k],st=styles[zone];
+   if(st.mix<.005)continue;
+   const c=st.size,bx=Math.floor(x/c)*c,by=Math.floor(y/c)*c;
+   const key=zone+':'+c+':'+bx+':'+by;
+   let rgb=tileColors.get(key);
+   if(!rgb){
+     // 同一物件內的色彩取樣。取樣位置依色塊有規則地局部錯位，不向其他物件借顏色。
+     const seed=(Math.imul(Math.floor(bx/c)+1,73856093)^Math.imul(Math.floor(by/c)+1,19349663)^Math.imul(zone+1,83492791))>>>0;
+     const dx=Math.round(((seed&255)/255*2-1)*st.offset);
+     const dy=Math.round((((seed>>>8)&255)/255*2-1)*st.offset);
+     const sx=Math.max(0,Math.min(W-1,bx+Math.floor(c/2)+dx));
+     const sy=Math.max(0,Math.min(H-1,by+Math.floor(c/2)+dy));
+     // 在來源座標附近尋找屬於同一物件的點；找不到則退回該色塊。
+     let px=sx,py=sy;
+     if(maskIds[py*W+px]!==zone){px=x;py=y;}
+     let rr=0,gg=0,bb=0,nn=0;
+     for(let oy=-2;oy<=2;oy++)for(let ox=-2;ox<=2;ox++){
+       const xx=px+ox,yy=py+oy;
+       if(xx<0||xx>=W||yy<0||yy>=H||maskIds[yy*W+xx]!==zone)continue;
+       const q=(yy*W+xx)*4;rr+=original[q];gg+=original[q+1];bb+=original[q+2];nn++;
+     }
+     if(!nn){const q=k*4;rgb=[original[q],original[q+1],original[q+2]]}
+     else rgb=[rr/nn,gg/nn,bb/nn];
+     // 減少色階，但不改變來源色相，也不額外套色／描邊。
+     const step=255/(st.levels-1);
+     rgb=rgb.map(v=>Math.round(v/step)*step);
+     tileColors.set(key,rgb);
+   }
+   const p=k*4,m=st.mix;
+   dest[p]=Math.round(original[p]*(1-m)+rgb[0]*m);
+   dest[p+1]=Math.round(original[p+1]*(1-m)+rgb[1]*m);
+   dest[p+2]=Math.round(original[p+2]*(1-m)+rgb[2]*m);
+ }
+ return output;
+}
+
+const focusCv=document.getElementById('focus'),focusCtx=focusCv.getContext('2d');
+let boundsById=[];
+function initFocusBounds(){boundsById=Array.from({length:10},()=>({left:W,top:H,right:0,bottom:0}));for(let y=0;y<H;y++)for(let x=0;x<W;x++){const id=maskIds[y*W+x],b=boundsById[id];b.left=Math.min(b.left,x);b.top=Math.min(b.top,y);b.right=Math.max(b.right,x);b.bottom=Math.max(b.bottom,y);}}
+function drawFocus(){focusCtx.clearRect(0,0,W,H);}
+
+// 檢查模式：實心分區色彩 + 雙層高對比輪廓；關閉後完全不影響成品影像。
+function drawSegmentationInspection(targetCtx,source){
+ if(!showMask || !maskIds)return;
+ const pix=targetCtx.createImageData(W,H),dd=pix.data;
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  const k=y*W+x,id=maskIds[k],p=k*4,c=COLORS[id];
+  let edge=false,near=false;
+  for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){
+   const xx=x+dx,yy=y+dy;if(xx<0||xx>=W||yy<0||yy>=H)continue;
+   if(maskIds[yy*W+xx]!==id){near=true;if(Math.abs(dx)<=1&&Math.abs(dy)<=1)edge=true;}
+  }
+  if(edge){dd[p]=18;dd[p+1]=24;dd[p+2]=31;}
+  else if(near){dd[p]=255;dd[p+1]=255;dd[p+2]=255;}
+  else{dd[p]=Math.round(source[p]*.25+c[0]*.75);dd[p+1]=Math.round(source[p+1]*.25+c[1]*.75);dd[p+2]=Math.round(source[p+2]*.25+c[2]*.75)}
+  dd[p+3]=255;
+ }
+ targetCtx.putImageData(pix,0,0);
+}
+function paint(frame){ctx.putImageData(frame,0,0);drawSegmentationInspection(ctx,frame.data);drawFocus();}
+function present(i){stage=Math.round(Math.max(0,Math.min(STEPS,i)));
+ const preview=$('photoPreviewImg'); preview.style.display='none';
+ if(phase!=='result'||showOriginal){paint(new ImageData(new Uint8ClampedArray(original),W,H));focusCtx.clearRect(0,0,W,H);return;}
+ if(!frames[stage])frames[stage]=makeFrame(stage);
+ paint(frames[stage]);$('history').value=stage;$('stageCount').textContent=stage+' / '+STEPS;$('stageTitle').textContent=stage?`第 ${stage} 次`:'原始';$('photoTag').textContent=stage?`${stage} / ${STEPS} · ${answers[stage-1]}`:'0 / 5 · 原始影像';$('imageLabel').textContent=stage?'依排名逐級偏移':'原始照片';$('status').textContent=stage?`累積 ${stage} 次選擇，物件重新排序；點選右側物件查看這一步的計分。`:'原始照片';updateStats();
+}
+function blendFrames(a,b,t){
+ const aa=frames[a]??(frames[a]=makeFrame(a)),bb=frames[b]??(frames[b]=makeFrame(b));
+ const mixed=ctx.createImageData(W,H),d=mixed.data;
+ for(let p=0;p<d.length;p+=4){d[p]=aa.data[p]*(1-t)+bb.data[p]*t;d[p+1]=aa.data[p+1]*(1-t)+bb.data[p+1]*t;d[p+2]=aa.data[p+2]*(1-t)+bb.data[p+2]*t;d[p+3]=255;}
+ paint(mixed)
+}
+function pause(){isPlaying=false;playToken++;$('play').textContent='▶ 觀看變化'}
+async function playback(){
+ if(isPlaying){pause();return;}pause();const token=++playToken;isPlaying=true;$('play').textContent='Ⅱ 暫停';showOriginal=false;
+ if(stage===STEPS)present(0);
+ for(let i=stage;i<STEPS;i++){
+  if(!isPlaying||token!==playToken)break;
+  frames[i]??=makeFrame(i);frames[i+1]??=makeFrame(i+1);
+  const start=performance.now(),dur=560;
+  await new Promise(resolve=>{
+   function tick(now){if(!isPlaying||token!==playToken){resolve();return;}const t=clamp((now-start)/dur);blendFrames(i,i+1,t);if(t<1)requestAnimationFrame(tick);else resolve()}
+   requestAnimationFrame(tick)
+  });
+  if(!isPlaying||token!==playToken)break;
+  present(i+1);
+  if(i<STEPS-1)await new Promise(resolve=>setTimeout(resolve,230));
+ }
+ if(token===playToken)pause();
+}
+function rankRows(target,n){
+ const el=$(target);el.textContent='';const r=ranking(n);
+ r.ids.forEach((id,rank)=>{
+  const row=document.createElement('button');row.type='button';row.className='rankItem'+(selectedObject===id?' active':'')+(r.retain[id]>=100?' topRank':'');
+  const num=document.createElement('span');num.className='rankNumber';num.textContent=String(rank+1).padStart(2,'0');
+  const name=document.createElement('span');name.className='rankName';name.textContent=NAMES[id];
+  const rail=document.createElement('span');rail.className='rankRail';const fill=document.createElement('span');fill.className='rankFill';fill.style.display='block';fill.style.width=r.retain[id]+'%';rail.append(fill);
+  const amount=document.createElement('span');amount.className='rankPercent';amount.textContent=r.retain[id]+'%';
+  row.append(num,name,rail,amount);row.onclick=()=>{selectedObject=id;rankRows(target,n);showExplanation(target==='previewRank'?'previewExplain':'resultExplain',id,n);if(phase==='result')drawFocus()};
+  el.append(row);
+ });
+ showExplanation(target==='previewRank'?'previewExplain':'resultExplain',selectedObject,n);
+}
+function showExplanation(target,id,n){
+ const r=ranking(n),div=$(target);div.textContent='';
+ const title=document.createElement('div');const index=r.rankById[id];
+ title.innerHTML='<strong>'+NAMES[id]+'</strong>｜第 '+(index+1)+' 名 · '+r.retain[id]+'% 資訊保留等級';
+ const sum=document.createElement('div');sum.textContent='累積 '+r.scores[id]+' 分。每次選擇如何影響它的優先度：';
+ const grid=document.createElement('div');grid.className='explainGrid';
+ for(let t=0;t<n;t++){const row=document.createElement('div');row.className='explainChoice';
+ const word=document.createElement('span');word.textContent=(t+1)+'. '+answers[t];
+ const value=document.createElement('span');value.className='explScore';value.textContent=(contribution(answers[t],id)>0?'+':'')+contribution(answers[t],id);
+ row.append(word,value);grid.append(row)}
+ const note=document.createElement('div');note.className='scoreNote';note.textContent='各題貢獻介於 −2 到 +2 分；0 分對應 70% 保留、每分相差 6%，範圍為 10%～100%。五題全部不以此區分則完整保留。排名相同時依原始類別順序排列。';
+ div.append(title,sum,grid,note);
+}
+// V41：分類完成後揭露「AI 實際辨認到什麼」與每個物件的計分依據。
+let auditSource='內建範例的預設分區';
+function pixelCoverage(){
+ const counts=new Uint32Array(10);
+ if(maskIds)for(let k=0;k<maskIds.length;k++)if(activeRegions.includes(maskIds[k]))counts[maskIds[k]]++;
+ return counts;
+}
+function showAuditDetail(id){
+ const div=$('auditDetail'),r=ranking(STEPS);
+ if(!div||!r.ids.includes(id))return;
+ const terms=answers.map((term,i)=>({term,score:contribution(term,id),i}));
+ const high=terms.filter(x=>x.score>0);
+ const mid=terms.filter(x=>x.score<0);
+ const zero=terms.filter(x=>x.score===0);
+ div.textContent='';
+ const head=document.createElement('strong');head.textContent=NAMES[id]+'｜累積 '+r.scores[id]+' 分';div.append(head);
+ function line(label,items){const p=document.createElement('div');p.className='auditChips';const strong=document.createElement('strong');strong.textContent=label+'：';p.append(strong);items.forEach(x=>{const chip=document.createElement('span');chip.textContent=(x.i+1)+'. '+x.term+' '+(x.score>0?'+':'')+x.score;p.append(chip)});if(!items.length){const txt=document.createElement('span');txt.textContent='無';p.append(txt)}div.append(p)}
+ line('獲得優先',high);line('降低優先',mid);line('不影響排名',zero);
+ const note=document.createElement('p');note.textContent='前三組與第五組為類別預設傾向，非 AI 針對照片的情境理解；第四組使用照片的實際像素面積排名。每個選擇在 −2～+2 間影響優先度；中立為 0。';note.style.marginBottom='0';div.append(note);
+ for(const row of document.querySelectorAll('#auditRows tr'))row.classList.toggle('current',Number(row.dataset.id)===id);
+}
+function renderAudit(){
+ const tbody=$('auditRows');if(!tbody||!ready)return;
+ const r=ranking(STEPS),area=pixelCoverage(),total=W*H;
+ $('auditSource').textContent=auditSource;
+ $('auditSummary').textContent=`系統目前使用 ${r.ids.length} 個分區排序；${answers.every(x=>x===NEUTRAL)?'五次均未採用分類框架，影像維持原貌。':'保留等級直接依分數換算，與名次無關。'} 分區數量不等於實際物件數量。`;
+ tbody.textContent='';
+ r.ids.forEach((id,pos)=>{
+  const tr=document.createElement('tr');tr.dataset.id=id;
+  const name=document.createElement('td');name.className='mName';name.textContent=String(pos+1).padStart(2,'0')+'  '+NAMES[id];
+  const pct=document.createElement('td');pct.textContent=(area[id]/total*100).toFixed(1)+'%';
+  const score=document.createElement('td');score.textContent=r.scores[id]+' 分';
+  const retain=document.createElement('td');retain.textContent=r.retain[id]+'%';
+  tr.append(name,pct,score,retain);tr.onclick=()=>{selectedObject=id;showAuditDetail(id);rankRows('previewRank',STEPS)};tbody.append(tr);
+ });
+ const other=r.ids.filter(id=>/其他|未辨識|未分類|背景/.test(NAMES[id]));
+ $('auditLimits').textContent=other.length?'辨識提醒：包含「'+other.map(id=>NAMES[id]).join('、')+'」。這些區域可能混合了多種實際物件，排名不代表每個物件都被辨識。':'辨識提醒：50 類是計分對照字典，不代表模型一定辨認 50 類；ADE20K 模型仍可能漏掉瓶罐、食物與重疊物件。';
+ const target=r.ids.includes(selectedObject)?selectedObject:r.ids[0];if(target!==undefined)showAuditDetail(target);
+ const result=$('resultAudit');if(result){result.textContent='';const small=document.createElement('div');small.className='head';small.innerHTML='<b>這次被系統歸類的場域元素</b><span class="muted">完成五次選擇的分析結果</span>';result.append(small);const lines=document.createElement('p');lines.className='detail';lines.textContent=r.ids.map(id=>NAMES[id]).join('、');result.append(lines);const copy=document.createElement('p');copy.className='detail';copy.textContent='各類的面積、分數與保留等級可在上方「AI 分類結果與觀看框架」查看。';result.append(copy)}
+}
+
+function updateStats(){rankRows('stats',stage)}
+function choose(concept){if(phase!=='select'||answers.length===STEPS||!ready||!segmentationReady)return;
+ answers.push(concept);$('progress').innerHTML=PAIRS.map((_,i)=>`<span class="${i<answers.length?'done':''}"></span>`).join('');
+ if(answers.length===STEPS){selectedObject=ranking(STEPS).ids[0]??0;rankRows('previewRank',STEPS);renderAudit();$('selection').classList.add('hidden');$('finished').classList.remove('hidden');$('chosenConcepts').textContent='';answers.forEach((a,i)=>{const c=document.createElement('span');c.className='chip';c.textContent=`${i+1} · ${a}`;$('chosenConcepts').appendChild(c)});}
+ else updateChoices();setSelectionAvailability();
+}
+function updateChoices(){
+ const round=answers.length; if(round>=STEPS)return;
+ $('round').textContent=`ROUND ${round+1} / ${STEPS}`;$('choiceButtons').textContent='';
+ for(const concept of [PAIRS[round][0],NEUTRAL,PAIRS[round][1]]){
+  const b=document.createElement('button');b.textContent=concept;b.classList.toggle('neutralChoice',concept===NEUTRAL);b.onclick=()=>choose(concept);$('choiceButtons').appendChild(b);
+ }
+ const labels=['來源與生成','運動與位置','使用與背景','畫面尺度（以面積近似）','存在的時間尺度'];
+ $('chooseStatus').textContent=!ready?'請先上傳照片。':!segmentationReady?'請先按「AI 自動分類」，完成分割後才能開始選擇。':`${labels[round]} · 已完成 ${round} / ${STEPS} 次選擇；照片目前保持原貌。`;setSelectionAvailability();
+}
+function setSelectionAvailability(){
+ for(const b of $('choiceButtons').querySelectorAll('button'))b.disabled=!ready||!segmentationReady;
+ if($('reveal'))$('reveal').disabled=!ready||!segmentationReady||answers.length!==STEPS;
+}
+function showSegmentationLegend(){
+ const el=$('segLegend'); el.textContent='';
+ if(!ready||!segmentationReady){el.style.display='none';return;}
+ el.style.display='flex';
+ activeRegions.forEach((id)=>{
+   const b=document.createElement('button');b.type='button';b.classList.toggle('active',id===selectedObject);
+   const d=document.createElement('span');d.className='dot';const c=COLORS[id%COLORS.length];d.style.background=`rgb(${c.join(',')})`;
+   const area=maskIds.reduce((n,v)=>n+(v===id),0)/(W*H)*100;
+   b.append(d,document.createTextNode(`${NAMES[id]} · ${area.toFixed(1)}%`));
+   b.onclick=()=>{selectedObject=id;showSegmentationLegend();};el.append(b);
+ });
+}
+function restart(){pause();selectedObject=0;$('reveal').disabled=!segmentationReady;$('reveal').textContent='揭示偏移影像 ↗';$('previewRank').textContent='';$('previewExplain').textContent='';$('auditRows').textContent='';$('auditDetail').textContent='';answers=[];frames=[];stage=0;phase='select';showOriginal=false;$('resultControls').classList.add('hidden');$('scoresPanel').classList.add('hidden');$('finished').classList.add('hidden');$('selection').classList.remove('hidden');$('progress').innerHTML=PAIRS.map(()=>'<span></span>').join('');$('photoTag').textContent='選擇階段 · 原始影像';$('imageLabel').textContent='原始照片';$('compare').textContent='按住查看原圖';if(ready)paint(new ImageData(new Uint8ClampedArray(original),W,H));focusCtx.clearRect(0,0,W,H);updateChoices();setSelectionAvailability()}
+function init(){if(!imageOK||!maskOK||ready)return; if(MOBILE){const maxDim=480,scale=Math.min(1,maxDim/Math.max(W,H));W=Math.round(W*scale);H=Math.round(H*scale); for(const canvas of [cv,focusCv,editorCanvas]){canvas.width=W;canvas.height=H;}}
+ const temp=document.createElement('canvas');temp.width=W;temp.height=H;let t=temp.getContext('2d',{willReadFrequently:true});t.drawImage(image,0,0,W,H);original=t.getImageData(0,0,W,H).data;
+ t.clearRect(0,0,W,H);t.imageSmoothingEnabled=false;t.drawImage(maskImage,0,0,W,H);const masks=t.getImageData(0,0,W,H).data;maskIds=new Uint8Array(W*H);
+ for(let k=0;k<W*H;k++)maskIds[k]=Math.max(0,Math.min(9,Math.round(masks[k*4]/25)));
+ initFocusBounds();ready=true;restart();
+}
+$('reveal').onclick=()=>{if(editMode)setEditor(false);if(!ready||!segmentationReady||answers.length!==STEPS)return;showMask=false;$('showMask').checked=false;phase='result';frames=[];stage=0;$('resultControls').classList.remove('hidden');$('scoresPanel').classList.remove('hidden');$('reveal').disabled=true;$('reveal').textContent='影像已揭示';present(0);requestAnimationFrame(playback)};
+$('play').onclick=playback;
+$('previous').onclick=()=>{pause();present(stage-1)};
+$('next').onclick=()=>{pause();present(stage+1)};
+$('history').oninput=e=>{pause();present(Number(e.target.value))};
+$('restart').onclick=restart;
+$('showMask').onchange=e=>{showMask=e.target.checked;if(ready)present(stage);if(editMode)redrawEditor();showSegmentationLegend()};
+$('strength').oninput=e=>{pause();visualStrength=Number(e.target.value);$('strengthNumber').textContent=visualStrength.toFixed(1)+'×';frames=[];present(stage)};
+const compare=$('compare');compare.addEventListener('pointerdown',e=>{if(phase!=='result')return;pause();showOriginal=true;present(stage)});
+for(const event of ['pointerup','pointercancel','pointerleave'])compare.addEventListener(event,()=>{if(showOriginal){showOriginal=false;present(stage)}});
+cv.addEventListener('click',event=>{if(phase!=='result')return;const box=cv.getBoundingClientRect(),x=Math.max(0,Math.min(W-1,Math.floor((event.clientX-box.left)/box.width*W))),y=Math.max(0,Math.min(H-1,Math.floor((event.clientY-box.top)/box.height*H)));selectedObject=maskIds[y*W+x];updateStats();drawFocus()});
+$('download').onclick=()=>{if(!ready)return;pause();present(stage);const a=document.createElement('a');a.download=`偏移-${stage}of${STEPS}.png`;const exportCanvas=document.createElement('canvas');exportCanvas.width=W;exportCanvas.height=H;exportCanvas.getContext('2d').putImageData(stage===0?new ImageData(new Uint8ClampedArray(original),W,H):(frames[stage]??makeFrame(stage)),0,0);a.href=exportCanvas.toDataURL('image/png');a.click()};
+
+// V24: upload, true browser-based AI semantic segmentation + manual mask correction.
+const editorCanvas=$('editCanvas'),editorCtx=editorCanvas.getContext('2d');
+let editMode=false,paintDown=false,editingZone=0,photoIsCustom=false;
+function redrawEditor(){
+ editorCtx.clearRect(0,0,W,H);if(!editMode||!maskIds)return;
+ const frame=editorCtx.createImageData(W,H),d=frame.data;
+ for(let k=0;k<maskIds.length;k++){
+   const rgb=COLORS[maskIds[k]],a=k*4;
+   d[a]=rgb[0];d[a+1]=rgb[1];d[a+2]=rgb[2];d[a+3]=77;
+ }
+ editorCtx.putImageData(frame,0,0);
+ if(showMask){
+   const under=new Uint8ClampedArray(original);
+   drawSegmentationInspection(editorCtx,under);
+ }
+}
+function regionSelectors(){
+ const sel=$('regionSelect'),prev=sel.value;sel.textContent='';
+ activeRegions.forEach(i=>{const name=NAMES[i];const opt=document.createElement('option');opt.value=i;opt.textContent=`${i+1}. ${name}`;sel.append(opt)});
+ sel.value=activeRegions.includes(Number(prev))?prev:String(activeRegions[0]??0);editingZone=Number(sel.value);
+ $('regionName').value=NAMES[editingZone];$('profileSelect').value=String(PROFILE_INDEX[editingZone]);
+}
+function setEditor(enabled){
+ if(!ready)return;
+ editMode=enabled;
+ editorCanvas.classList.toggle('active',enabled);
+ $('editPanel').classList.toggle('active',enabled);
+ $('editToggle').textContent=enabled?'收起分區編輯':'編輯／修正分區';
+ if(enabled){pause();phase='select';restart();regionSelectors();redrawEditor();}
+ else{editorCtx.clearRect(0,0,W,H);frames=[];restart();}
+}
+function roughRegions(){
+ activeRegions=Array.from({length:10},(_,i)=>i);
+ // Initial placement only, not object recognition. Every pixel maps to exactly one of 10 zones.
+ maskIds=new Uint8Array(W*H);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+   let row=Math.min(4,Math.floor(y/H*5)),col=x<W/2?0:1;
+   maskIds[y*W+x]=row*2+col;
+ }
+ frames=[];initFocusBounds();redrawEditor();
+}
+function toPaintCoords(event){const r=editorCanvas.getBoundingClientRect();return [Math.floor((event.clientX-r.left)/r.width*W),Math.floor((event.clientY-r.top)/r.height*H)]}
+function dab(x,y){
+ if(!editMode||!maskIds)return;
+ const radius=Number($('brushSize').value)/2;
+ const y0=Math.max(0,Math.floor(y-radius)),y1=Math.min(H-1,Math.ceil(y+radius));
+ const x0=Math.max(0,Math.floor(x-radius)),x1=Math.min(W-1,Math.ceil(x+radius));
+ for(let yy=y0;yy<=y1;yy++)for(let xx=x0;xx<=x1;xx++){
+  if((xx-x)**2+(yy-y)**2<=radius*radius)maskIds[yy*W+xx]=editingZone;
+ }
+ redrawEditor();
+}
+editorCanvas.addEventListener('pointerdown',e=>{if(!editMode)return;paintDown=true;editorCanvas.setPointerCapture(e.pointerId);const [x,y]=toPaintCoords(e);dab(x,y)});
+editorCanvas.addEventListener('pointermove',e=>{if(!paintDown)return;const [x,y]=toPaintCoords(e);dab(x,y)});
+for(const type of ['pointerup','pointercancel','lostpointercapture'])editorCanvas.addEventListener(type,()=>{paintDown=false;frames=[]});
+$('regionSelect').addEventListener('change',e=>{editingZone=Number(e.target.value);$('regionName').value=NAMES[editingZone];$('profileSelect').value=String(PROFILE_INDEX[editingZone])});
+$('regionName').addEventListener('input',e=>{NAMES[editingZone]=e.target.value.trim()||`區域 ${editingZone+1}`;const opt=[...$('regionSelect').options].find(o=>Number(o.value)===editingZone);if(opt)opt.textContent=`${editingZone+1}. ${NAMES[editingZone]}`});
+$('profileSelect').addEventListener('change',e=>{
+ const template=Number(e.target.value);PROFILE_INDEX[editingZone]=template;
+ for(const word of Object.keys(DEFAULT_REL))REL[word][editingZone]=DEFAULT_REL[word][template];
+ frames=[];
+});
+$('brushSize').addEventListener('input',e=>$('brushValue').textContent=e.target.value+' px');
+$('fillRegion').onclick=()=>{if(!editMode)return;maskIds.fill(editingZone);frames=[];redrawEditor()};
+$('resetGrid').onclick=()=>{if(!editMode)return;roughRegions()};
+$('editToggle').onclick=()=>setEditor(!editMode);
+$('editDone').onclick=()=>setEditor(false);
+const prof=$('profileSelect');
+DEFAULT_NAMES.forEach((name,i)=>{const op=document.createElement('option');op.value=i;op.textContent=name;prof.append(op)});
+
+function drawUploadedImage(pic,fileName){
+  pause();
+  const factor=Math.min(1,(MOBILE?480:900)/Math.max(pic.naturalWidth,pic.naturalHeight));
+  W=Math.max(1,Math.round(pic.naturalWidth*factor));H=Math.max(1,Math.round(pic.naturalHeight*factor));
+  for(const canvas of [cv,focusCv,editorCanvas]){canvas.width=W;canvas.height=H;}
+  const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+  const t=tmp.getContext('2d',{willReadFrequently:true});
+  t.drawImage(pic,0,0,W,H);
+  const imgData=t.getImageData(0,0,W,H);
+  original=new Uint8ClampedArray(imgData.data);
+  ctx.putImageData(new ImageData(new Uint8ClampedArray(original),W,H),0,0);
+  const preview=$('photoPreviewImg');
+  preview.removeAttribute('src'); preview.style.display='none';$('emptyState').style.display='none';
+  cv.style.background='transparent';
+  for(let i=0;i<10;i++){
+    NAMES[i]=`區域 ${i+1}`;PROFILE_INDEX[i]=i;
+    for(const word of Object.keys(DEFAULT_REL))REL[word][i]=DEFAULT_REL[word][i]; axesByRegion[i]=AXES_SAMPLE[i].slice();
+  }
+  photoIsCustom=true;ready=true;segmentationReady=false;roughRegions();restart();setEditor(false);setSelectionAvailability();$('segLegend').style.display='none';$('showMask').checked=false;showMask=false;
+  $('uploadStatus').textContent=`已載入「${fileName}」。現在按「分析影像」，完成後會自動開啟彩色分類範圍。`;
+}
+// iPhone HEIC/HEIF: try native image decoder first; load the conversion library only if necessary.
+// Conversion takes place in the user's browser; the photo is not uploaded to our server.
+let heicLibraryPromise=null;
+function loadHEICLibrary(){
+ if(typeof window.heic2any==='function')return Promise.resolve(window.heic2any);
+ if(heicLibraryPromise)return heicLibraryPromise;
+ heicLibraryPromise=new Promise((resolve,reject)=>{
+   const tag=document.createElement('script');
+   tag.src='https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+   tag.async=true;
+   tag.onload=()=>typeof window.heic2any==='function'?resolve(window.heic2any):reject(new Error('HEIC 轉檔工具未正確載入'));
+   tag.onerror=()=>reject(new Error('無法下載 HEIC 轉檔工具，請檢查網路'));
+   document.head.appendChild(tag);
+ }).catch(err=>{heicLibraryPromise=null;throw err});
+ return heicLibraryPromise;
+}
+function readAsDataURL(blob){
+ return new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(reader.result);
+   reader.onerror=()=>reject(new Error('檔案讀取失敗'));
+   reader.readAsDataURL(blob);
+ });
+}
+function decodeImage(src){
+ return new Promise((resolve,reject)=>{
+   const pic=new Image();
+   pic.onload=()=>pic.naturalWidth>0&&pic.naturalHeight>0?resolve(pic):reject(new Error('無法辨識照片尺寸'));
+   pic.onerror=()=>reject(new Error('瀏覽器無法解碼照片'));
+   pic.src=src;
+ });
+}
+$('photoUpload').addEventListener('change',async event=>{
+ const file=event.target.files?.[0];if(!file)return;
+ const request=++photoVersion;
+ auditSource='上傳照片（尚未完成 AI 辨識）';
+ const heic=/\.(heic|heif)$/i.test(file.name)||/^image\/(heic|heif|heic-sequence|heif-sequence)$/i.test(file.type);
+ if(!heic && !file.type.startsWith('image/') && !/\.(jpg|jpeg|png|webp|gif|bmp|avif)$/i.test(file.name)){
+   statusAI('請選擇 JPG、PNG、WebP、HEIC 或 HEIF 照片。');return;
+ }
+ statusAI(heic?'正在讀取 iPhone HEIC／HEIF 照片…':'正在讀取照片…');
+ try{
+   let pic=null;
+   // Native decoding may work on some platforms; use it before loading a large converter.
+   try{pic=await decodeImage(await readAsDataURL(file));}catch(err){if(!heic)throw err;}
+   if(!pic){
+     statusAI('正在把 HEIC／HEIF 轉成 JPEG（首次使用需要網路）…');
+     const convert=await loadHEICLibrary();
+     const result=await convert({blob:file,toType:'image/jpeg',quality:0.9});
+     const jpeg=Array.isArray(result)?result[0]:result;
+     pic=await decodeImage(await readAsDataURL(jpeg));
+   }
+   if(request!==photoVersion)return;
+   drawUploadedImage(pic,file.name+(heic?'（已支援 HEIC）':''));
+ }catch(error){
+   if(request!==photoVersion)return;
+   statusAI('照片無法載入：'+String(error?.message||error)+'。若是 HEIC，請確認網路連線，或從「照片」App 匯出 JPEG 再試。');
+ }
+});
+
+// V30 - Browser-based YOLO11n instances + SegFormer scene categories (ONNX). No fake ten-part filling.
+// Only detected instances plus one honest remainder/background are ranked.
+let yoloSession=null,aiBusy=false,photoVersion=0;
+const YOLO_URL='https://huggingface.co/unileon-robotics/YOLO11-ONNX/resolve/main/yolo11n-seg.onnx';
+const COCO='person bicycle car motorcycle airplane bus train truck boat traffic light fire hydrant stop sign parking meter bench bird cat dog horse sheep cow elephant bear zebra giraffe backpack umbrella handbag tie suitcase frisbee skis snowboard sports ball kite baseball bat baseball glove skateboard surfboard tennis racket bottle wine glass cup fork knife spoon bowl banana apple sandwich orange broccoli carrot hot dog pizza donut cake chair couch potted plant bed dining table toilet tv laptop mouse remote keyboard cell phone microwave oven toaster sink refrigerator book clock vase scissors teddy bear hair drier toothbrush'.split(' ');
+// COCO names with spaces are restored by exact index ordering.
+const COCO_NAMES=['person','bicycle','car','motorcycle','airplane','bus','train','truck','boat','traffic light','fire hydrant','stop sign','parking meter','bench','bird','cat','dog','horse','sheep','cow','elephant','bear','zebra','giraffe','backpack','umbrella','handbag','tie','suitcase','frisbee','skis','snowboard','sports ball','kite','baseball bat','baseball glove','skateboard','surfboard','tennis racket','bottle','wine glass','cup','fork','knife','spoon','bowl','banana','apple','sandwich','orange','broccoli','carrot','hot dog','pizza','donut','cake','chair','couch','potted plant','bed','dining table','toilet','tv','laptop','mouse','remote','keyboard','cell phone','microwave','oven','toaster','sink','refrigerator','book','clock','vase','scissors','teddy bear','hair drier','toothbrush'];
+const ZH_CLASSES={person:'人物',bicycle:'自行車',car:'汽車',motorcycle:'機車',bus:'公車',truck:'卡車',skateboard:'滑板',chair:'椅子',couch:'沙發',bed:'床', 'dining table':'餐桌',book:'書', bottle:'瓶子', 'potted plant':'盆栽', backpack:'背包', handbag:'手提包', umbrella:'雨傘', tie:'領帶', apple:'蘋果', banana:'香蕉', orange:'橘子', 'cell phone':'手機', laptop:'筆電', tv:'電視', dog:'狗',cat:'貓',clock:'時鐘', 'sports ball':'球',cup:'杯子', bowl:'碗',vase:'花瓶', train:'火車',bench:'長椅', kite:'風箏',surfboard:'衝浪板'};
+function yoloClassLabel(i){const en=COCO_NAMES[i]||'物件';return ZH_CLASSES[en]||en;}
+function statusAI(msg){$('uploadStatus').textContent=msg;}
+function iou(a,b){const left=Math.max(a.x1,b.x1),top=Math.max(a.y1,b.y1),right=Math.min(a.x2,b.x2),bottom=Math.min(a.y2,b.y2);const area=Math.max(0,right-left)*Math.max(0,bottom-top);return area/(Math.max(1,(a.x2-a.x1)*(a.y2-a.y1)+(b.x2-b.x1)*(b.y2-b.y1)-area));}
+function getYoloInputShape(session){
+ // Read the ONNX session's declared tensor dimensions instead of assuming 640×640.
+ // The selected yolo11n-seg.onnx export expects [1, 3, 480, 640].
+ const name=session.inputNames[0];
+ const metadata=session.inputMetadata?.[name];
+ const dims=metadata?.dimensions || metadata?.dims || [];
+ const h=Number.isInteger(dims[2]) && dims[2]>0 ? dims[2] : 480;
+ const w=Number.isInteger(dims[3]) && dims[3]>0 ? dims[3] : 640;
+ return {h,w};
+}
+function buildYoloInput(inW,inH){
+ const scale=Math.min(inW/W,inH/H),tw=Math.round(W*scale),th=Math.round(H*scale),padX=Math.floor((inW-tw)/2),padY=Math.floor((inH-th)/2);
+ const img=document.createElement('canvas');img.width=inW;img.height=inH;
+ const g=img.getContext('2d',{willReadFrequently:true});g.fillStyle='#727272';g.fillRect(0,0,inW,inH);
+ const raw=document.createElement('canvas');raw.width=W;raw.height=H;
+ raw.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(original),W,H),0,0);
+ g.drawImage(raw,padX,padY,tw,th);
+ const pixels=g.getImageData(0,0,inW,inH).data;
+ const input=new Float32Array(3*inW*inH),plane=inW*inH;
+ for(let j=0;j<plane;j++){const p=j*4;input[j]=pixels[p]/255;input[j+plane]=pixels[p+1]/255;input[j+plane*2]=pixels[p+2]/255;}
+ return {input,scale,tw,th,padX,padY,inW,inH};
+}
+function unpackYolo(out,pre){
+ const outputs=Object.values(out),pred=outputs.find(t=>t.dims.length===3&&(t.dims[1]>=100||t.dims[2]>=100));
+ const proto=outputs.find(t=>t.dims.length===4);
+ if(!pred||!proto)throw new Error('YOLO 模型輸出格式不符合預期（需要偵測與遮罩原型）。');
+ const [_,d1,d2]=pred.dims,features=Math.min(d1,d2),entries=Math.max(d1,d2), transposed=d1<d2;
+ const [batch,channels,ph,pw]=proto.dims, nClasses=features-4-channels;
+ if(nClasses<1||nClasses>150||ph<10||pw<10)throw new Error('不支援的 YOLO 輸出形狀。');
+ const at=(f,i)=>transposed?pred.data[f*entries+i]:pred.data[i*features+f];
+ const candidates=[];
+ for(let i=0;i<entries;i++){
+   let bestScore=0,bestClass=-1;
+   for(let c=0;c<nClasses;c++){const score=at(4+c,i);if(score>bestScore){bestScore=score;bestClass=c;}}
+   if(bestScore<0.3)continue;
+   const cx=at(0,i),cy=at(1,i),bw=at(2,i),bh=at(3,i);
+   const x1=Math.max(0,(cx-bw/2-pre.padX)/pre.scale),y1=Math.max(0,(cy-bh/2-pre.padY)/pre.scale);
+   const x2=Math.min(W,(cx+bw/2-pre.padX)/pre.scale),y2=Math.min(H,(cy+bh/2-pre.padY)/pre.scale);
+   if(x2<=x1||y2<=y1||((x2-x1)*(y2-y1))<W*H*.0015)continue;
+   const coeff=Float32Array.from({length:channels},(_,j)=>at(4+nClasses+j,i));
+   candidates.push({score:bestScore,cls:bestClass,x1,y1,x2,y2,coeff});
+ }
+ candidates.sort((a,b)=>b.score-a.score);
+ const kept=[];
+ for(const c of candidates){if(kept.length>=9)break;if(kept.some(p=>p.cls===c.cls&&iou(p,c)>.52))continue;kept.push(c);}
+ // Build 160x160 proto masks before upsampling, far cheaper than per-pixel 32-channel multiplication.
+ const pixelCount=ph*pw,protoData=proto.data;
+ const instances=[];
+ for(const det of kept){
+   const ml=new Uint8Array(pixelCount);
+   const minX=Math.max(0,Math.floor((det.x1*pre.scale+pre.padX)/pre.inW*pw)),maxX=Math.min(pw-1,Math.ceil((det.x2*pre.scale+pre.padX)/pre.inW*pw));
+   const minY=Math.max(0,Math.floor((det.y1*pre.scale+pre.padY)/pre.inH*ph)),maxY=Math.min(ph-1,Math.ceil((det.y2*pre.scale+pre.padY)/pre.inH*ph));
+   for(let yy=minY;yy<=maxY;yy++)for(let xx=minX;xx<=maxX;xx++){
+     const u=yy*pw+xx;let v=0;
+     for(let c=0;c<channels;c++)v+=det.coeff[c]*protoData[c*pixelCount+u];
+     if(v>0.0)ml[u]=1;
+   }
+   // Remove pin-sized isolated proto islands; never split big areas to reach a quota.
+   const seen=new Uint8Array(pixelCount),q=new Int32Array(pixelCount);
+   for(let k=0;k<pixelCount;k++)if(ml[k]&&!seen[k]){
+     let start=0,end=1;seen[k]=1;q[0]=k;
+     while(start<end){const v=q[start++],x=v%pw,y=(v/pw)|0;
+       if(x>0&&ml[v-1]&&!seen[v-1]){seen[v-1]=1;q[end++]=v-1;}
+       if(x+1<pw&&ml[v+1]&&!seen[v+1]){seen[v+1]=1;q[end++]=v+1;}
+       if(y>0&&ml[v-pw]&&!seen[v-pw]){seen[v-pw]=1;q[end++]=v-pw;}
+       if(y+1<ph&&ml[v+pw]&&!seen[v+pw]){seen[v+pw]=1;q[end++]=v+pw;}
+     }
+     if(end<Math.max(10,Math.round(pixelCount*.0005)))for(let j=0;j<end;j++)ml[q[j]]=0;
+   }
+   const pixels=[];
+   const xStart=Math.max(0,Math.floor(det.x1)),xEnd=Math.min(W,Math.ceil(det.x2));
+   const yStart=Math.max(0,Math.floor(det.y1)),yEnd=Math.min(H,Math.ceil(det.y2));
+   for(let y=yStart;y<yEnd;y++){
+     const py=Math.max(0,Math.min(ph-1,Math.floor((y*pre.scale+pre.padY)/pre.inH*ph)));
+     for(let x=xStart;x<xEnd;x++){
+       const px=Math.max(0,Math.min(pw-1,Math.floor((x*pre.scale+pre.padX)/pre.inW*pw)));
+       if(ml[py*pw+px])pixels.push(y*W+x);
+     }
+   }
+   if(pixels.length>W*H*.0015)instances.push({...det,pixels});
+ }
+ return instances;
+}
+ // 將同類 YOLO 實例合併成一個可排序類別，形狀仍是所有實例遮罩的聯集。
+ // 以語意分割補充分辨不同場域元素，不使用隨機切片或空白名額。
+ function commitYoloInstances(instances,semantic){
+  const total=W*H,ids=new Uint8Array(total);ids.fill(255);
+  const byClass=new Map();
+  for(const instance of instances){
+    const label=COCO_NAMES[instance.cls]||'object';
+    let item=byClass.get(label);
+    if(!item){item={label,cls:instance.cls,parts:[],area:0};byClass.set(label,item);}
+    item.parts.push(instance);item.area+=instance.pixels.length;
+  }
+  const detected=[...byClass.values()].sort((a,b)=>b.area-a.area).slice(0,8);
+  const names=[],profiles=[],counts=[];
+  for(let j=0;j<detected.length;j++){
+    const group=detected[j];
+    for(const piece of group.parts)for(const pixel of piece.pixels){if(pixel>=0&&pixel<total&&ids[pixel]===255)ids[pixel]=j;}
+    names[j]=yoloClassLabel(group.cls); profiles[j]=autoProfile(group.label);counts[j]=group.parts.length;
+  }
+  let next=detected.length,backgroundCount=0;
+  if(semantic){
+    const areas=semantic.groups.map((g,index)=>({index,area:0,name:g.name,profile:g.profile}));
+    for(let k=0;k<total;k++)if(ids[k]===255&&semantic.labels[k]!==255){const v=semantic.labels[k];if(areas[v])areas[v].area++;}
+    // 背景類別不依實例數切割；同類像素歸屬同一排名。
+    const cap=Math.max(0,9-next);
+    const candidates=areas.filter(g=>g.area>=total*.009).sort((a,b)=>b.area-a.area).slice(0,cap);
+    const map=new Map(candidates.map((group,i)=>[group.index,next+i]));
+    for(let k=0;k<total;k++)if(ids[k]===255){const group=map.get(semantic.labels[k]);if(group!==undefined)ids[k]=group;}
+    for(let j=0;j<candidates.length;j++){
+      names[next+j]=candidates[j].name; profiles[next+j]=candidates[j].profile;counts[next+j]=1;
+    }
+    backgroundCount=candidates.length; next+=backgroundCount;
+  }
+  // 僅當確實有剩餘未辨認像素才佔用一個背景名額。
+  let remainder=0;
+  for(let k=0;k<total;k++)if(ids[k]===255)remainder++;
+  if(remainder){
+    const last=next<10?next++:9;
+    for(let k=0;k<total;k++)if(ids[k]===255)ids[k]=last;
+    if(!names[last]){names[last]='未辨認的場域';profiles[last]=9;counts[last]=1;}
+  }
+  maskIds=ids;activeRegions=Array.from({length:next},(_,i)=>i);
+  for(let j=0;j<next;j++){
+    NAMES[j]=names[j]||`場域元素 ${j+1}`;PROFILE_INDEX[j]=profiles[j]??9;
+    for(const word in DEFAULT_REL)REL[word][j]=DEFAULT_REL[word][PROFILE_INDEX[j]];
+  }
+  for(let j=next;j<10;j++){
+    NAMES[j]='未使用';PROFILE_INDEX[j]=9;axesByRegion[j]=[0,0,0,0];for(const word in DEFAULT_REL)REL[word][j]=0;
+  }
+  // 提供分割品質檢查：每個排名顯示是否合併了多個實例。
+  window.__v31SegmentationSummary={groups:detected.map(g=>({name:yoloClassLabel(g.cls),instances:g.parts.length})), backgroundCount,regions:next};
+  frames=[];selectedObject=activeRegions[0]??0;editingZone=selectedObject;initFocusBounds();restart();
+  return {foregroundCount:detected.length,individualCount:instances.length,backgroundCount,regions:next};
+ }
+ // 更細緻的背景分類：保留原有照片的物件概念，不把牆、窗、街道、植被全算成背景。
+ let sceneSegmenter=null;
+ const SCENE_GROUPS=[{"name":"人物","aliases":["person"],"traits":[2,2,2,0,0,1,1,1,2,1]},{"name":"天空","aliases":["sky"],"traits":[2,0,1,1,1,1,1,1,1,1]},{"name":"樹木","aliases":["tree","palm"],"traits":[2,2,0,2,2,1,1,1,1,1]},{"name":"草地","aliases":["grass"],"traits":[2,2,2,2,1,1,1,1,1,1]},{"name":"花卉","aliases":["flower"],"traits":[2,2,2,1,0,0,1,1,1,1]},{"name":"盆栽","aliases":["plant"],"traits":[2,2,2,0,0,1,1,1,1,1]},{"name":"農田","aliases":["field"],"traits":[2,2,0,2,1,1,1,1,1,1]},{"name":"山丘／山脈","aliases":["mountain","hill"],"traits":[2,0,0,2,2,1,1,1,1,1]},{"name":"岩石","aliases":["rock","stone"],"traits":[2,0,0,2,2,1,1,1,1,1]},{"name":"泥土","aliases":["earth","dirt"],"traits":[2,1,1,1,1,1,1,1,1,1]},{"name":"沙地","aliases":["sand"],"traits":[2,1,1,1,1,1,1,1,1,1]},{"name":"河流","aliases":["river"],"traits":[2,0,0,2,1,1,1,1,1,1]},{"name":"湖泊","aliases":["lake"],"traits":[2,0,0,2,2,1,1,1,1,1]},{"name":"海洋","aliases":["sea"],"traits":[2,0,0,2,2,1,1,1,1,1]},{"name":"水面","aliases":["water"],"traits":[2,1,1,1,1,1,1,1,1,1]},{"name":"道路","aliases":["road"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"人行道","aliases":["sidewalk"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"地板","aliases":["floor"],"traits":[0,0,0,2,1,2,1,1,1,1]},{"name":"建築物","aliases":["building","house","skyscraper"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"牆壁","aliases":["wall","wall brick","wall concrete","brickwall"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"天花板","aliases":["ceiling"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"窗戶","aliases":["windowpane","window"],"traits":[0,0,0,2,1,2,1,1,1,1]},{"name":"門","aliases":["door","screen door"],"traits":[0,0,1,1,1,2,1,1,1,1]},{"name":"樓梯","aliases":["stairway","step","stairs"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"欄杆","aliases":["railing","bannister","fence"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"柱子","aliases":["column","pillar"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"橋梁","aliases":["bridge"],"traits":[0,0,0,2,2,2,1,1,1,1]},{"name":"路燈","aliases":["streetlight","street lamp"],"traits":[0,0,0,2,1,2,1,1,1,1]},{"name":"交通標誌","aliases":["signboard","traffic light","trade name"],"traits":[0,0,0,2,1,2,1,1,1,1]},{"name":"汽車","aliases":["car","van"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"公車","aliases":["bus","minibus"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"卡車","aliases":["truck"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"自行車","aliases":["bicycle"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"船舶","aliases":["boat","ship"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"飛機","aliases":["airplane"],"traits":[0,0,0,0,1,2,1,1,0,1]},{"name":"椅子","aliases":["chair","armchair","seat","swivel chair","stool"],"traits":[0,1,1,0,1,2,1,1,2,1]},{"name":"桌子","aliases":["table","desk","coffee table","dining table"],"traits":[0,1,1,0,1,2,1,1,2,1]},{"name":"沙發","aliases":["sofa","couch"],"traits":[0,1,2,1,1,2,1,1,2,1]},{"name":"床鋪","aliases":["bed"],"traits":[0,1,2,1,1,2,1,1,2,1]},{"name":"櫃子","aliases":["cabinet","wardrobe","chest of drawers","bookcase"],"traits":[0,0,0,2,1,2,1,1,2,1]},{"name":"架子","aliases":["shelf"],"traits":[0,0,0,2,1,2,1,1,2,1]},{"name":"窗簾","aliases":["curtain","blind"],"traits":[0,0,2,1,1,2,1,1,2,1]},{"name":"地毯","aliases":["rug","carpet"],"traits":[0,0,2,1,1,2,1,1,2,1]},{"name":"枕頭","aliases":["pillow","cushion"],"traits":[0,0,2,0,1,2,1,1,2,1]},{"name":"燈具","aliases":["lamp","chandelier","light","sconce"],"traits":[0,0,1,1,1,2,1,1,2,1]},{"name":"鏡子","aliases":["mirror"],"traits":[0,0,1,1,1,2,1,1,2,1]},{"name":"冰箱","aliases":["refrigerator"],"traits":[0,0,1,1,1,2,1,1,2,1]},{"name":"洗手台","aliases":["sink"],"traits":[0,0,0,2,1,2,1,1,2,1]},{"name":"馬桶","aliases":["toilet"],"traits":[0,0,0,2,1,2,1,1,2,1]},{"name":"繪畫／海報","aliases":["painting","poster"],"traits":[0,0,1,1,1,0,1,1,1,1]}];
+const AXES_50=[[0,2,1,-2],[2,-2,-2,0],[2,-2,-1,2],[2,-2,-1,1],[2,-2,0,-1],[0,-1,2,0],[1,-2,1,1],[2,-2,-2,2],[2,-2,-2,2],[2,-2,-2,1],[2,-2,-2,1],[2,1,-2,1],[2,-2,-2,2],[2,0,-2,2],[2,0,-2,0],[-2,-2,0,2],[-2,-2,0,2],[-2,-2,0,2],[-2,-2,-2,2],[-2,-2,-2,2],[-2,-2,-2,2],[-2,-2,-1,2],[-2,-1,1,2],[-2,-2,1,2],[-2,-2,-1,2],[-2,-2,-2,2],[-2,-2,0,2],[-2,-2,-1,2],[-2,-2,1,1],[-2,2,2,-1],[-2,2,2,-1],[-2,2,2,-1],[-2,2,2,-1],[-2,2,2,-1],[-2,2,2,-1],[-2,1,2,0],[-2,0,2,0],[-2,-1,2,1],[-2,-1,2,1],[-2,-2,2,1],[-2,-2,2,1],[-2,0,1,-1],[-2,-2,2,1],[-2,-1,2,0],[-2,-2,2,1],[-2,-2,2,1],[-2,-2,2,1],[-2,-2,2,2],[-2,-2,2,2],[-2,-2,1,0]];
+const AXES_SAMPLE=[[-2, -2, -2, 2], [2, -2, -1, 1], [2, -2, -1, 1], [0, 2, 2, -1], [-2, 0, 2, -1], [0, 2, 2, -1], [-2, 1, 2, -1], [-2, 2, 2, -1], [2, 0, 2, -1], [2, -2, -2, 2]];
+let axesByRegion=AXES_SAMPLE.map(x=>x.slice());
+
+
+// 50 類詞彙是明確的設計者預設判斷；不是模型對每張照片動態推理的分數。
+// traits 的每一格對應十組概念的左邊詞；另一邊為 2 - traits 值。
+const SCENE_SCORE=SCENE_GROUPS.map(g=>Object.fromEntries(PAIRS.flatMap((pair,i)=>[[pair[0],g.traits[i]],[pair[1],2-g.traits[i]]])));
+const SCENE_LABEL_TO_GROUP=new Map();
+SCENE_GROUPS.forEach((g,i)=>g.aliases.forEach(alias=>{
+ const key=alias.toLowerCase().trim();
+ if(SCENE_LABEL_TO_GROUP.has(key))throw new Error('重複的 ADE 標籤：'+key);
+ SCENE_LABEL_TO_GROUP.set(key,i);
+}));
+const dictView=document.getElementById('dictionaryList');
+if(dictView)dictView.textContent=SCENE_GROUPS.map((g,i)=>`${String(i+1).padStart(2,'0')}. ${g.name}`).join('　／　');
+ async function classifySceneBackground(myPhoto){
+  if(!sceneSegmenter){
+   const lib=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
+   sceneSegmenter=await lib.pipeline('image-segmentation','Xenova/segformer-b0-finetuned-ade-512-512',{device:'wasm'});
+  }
+  if(myPhoto!==photoVersion)return null;
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(original),W,H),0,0);
+  const segments=await sceneSegmenter(c.toDataURL('image/jpeg',.85));
+  if(myPhoto!==photoVersion)return null;
+  if(!Array.isArray(segments))throw new Error('背景模型沒有回傳可使用的語意分割結果');
+  const found=SCENE_GROUPS.map(()=>new Uint8Array(W*H));
+  for(const seg of segments){
+   const group=SCENE_LABEL_TO_GROUP.get(String(seg.label||'').toLowerCase().trim()) ?? -1;
+   if(group<0||!seg.mask?.data)continue;
+   const m=seg.mask,sw=m.width,sh=m.height,ch=m.channels||1,src=m.data;
+   for(let y=0;y<H;y++){
+    const sy=Math.min(sh-1,Math.floor(y*sh/H));
+    for(let x=0;x<W;x++){
+     const sx=Math.min(sw-1,Math.floor(x*sw/W));
+     if(src[(sy*sw+sx)*ch]>127)found[group][y*W+x]=1;
+    }
+   }
+  }
+  const raw=new Uint8Array(W*H);raw.fill(255);
+  for(let k=0;k<raw.length;k++)for(let j=0;j<found.length;j++)if(found[j][k]){raw[k]=j;break;}
+  // 4px 像素塊上的多數決：減少雜訊，同時比 V30 的 8px 格線更保留邊界細節。
+  const cell=4,gw=Math.ceil(W/cell),gh=Math.ceil(H/cell),coarse=new Uint8Array(gw*gh);coarse.fill(255);
+  for(let gy=0;gy<gh;gy++)for(let gx=0;gx<gw;gx++){
+   const hits=new Uint16Array(found.length+1);
+   for(let y=gy*cell;y<Math.min(H,(gy+1)*cell);y++)for(let x=gx*cell;x<Math.min(W,(gx+1)*cell);x++){
+    const label=raw[y*W+x];hits[label===255?found.length:label]++;
+   }
+   let best=0,id=found.length;for(let j=0;j<hits.length;j++)if(hits[j]>best){best=hits[j];id=j;}
+   coarse[gy*gw+gx]=id===found.length?255:id;
+  }
+  const smooth=new Uint8Array(gw*gh);smooth.fill(255);
+  for(let gy=0;gy<gh;gy++)for(let gx=0;gx<gw;gx++){
+   const hits=new Uint8Array(found.length+1);
+   for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){
+    const xx=Math.max(0,Math.min(gw-1,gx+ox)),yy=Math.max(0,Math.min(gh-1,gy+oy));
+    const v=coarse[yy*gw+xx];hits[v===255?found.length:v]++;
+   }
+   let best=0,id=found.length;for(let j=0;j<hits.length;j++)if(hits[j]>best){best=hits[j];id=j;}
+   smooth[gy*gw+gx]=id===found.length?255:id;
+  }
+  const labels=new Uint8Array(W*H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)labels[y*W+x]=smooth[Math.floor(y/cell)*gw+Math.floor(x/cell)];
+  return {labels,groups:SCENE_GROUPS};
+ }
+// V34｜只用 SegFormer 語意分割。每個語意類別只有一個可排序項目，
+// 不會用假物件或任意分割去湊滿十個。
+function commitSemantic(semantic){
+ if(!semantic || !semantic.labels || !semantic.groups)throw new Error('SegFormer 沒有回傳有效的分類資料');
+ const total=W*H,counts=new Uint32Array(semantic.groups.length);
+ for(let k=0;k<total;k++)if(semantic.labels[k]<counts.length)counts[semantic.labels[k]]++;
+ const candidates=Array.from(counts, (count,i)=>({i,count})).filter(g=>g.count>=Math.max(25,total*.005)).sort((a,b)=>b.count-a.count);
+ if(!candidates.length)throw new Error('沒有找到足夠清楚的語意類別，請換照片再試');
+ // 最多九個語意類別，第十格只有在確有未分類像素時才使用。
+ const selected=candidates.slice(0,9),lookup=new Uint8Array(counts.length);lookup.fill(255);
+ for(let i=0;i<selected.length;i++)lookup[selected[i].i]=i;
+ const ids=new Uint8Array(total);let unknownCount=0;
+ for(let k=0;k<total;k++){
+   const label=semantic.labels[k], mapped=label<lookup.length?lookup[label]:255;
+   if(mapped===255){ids[k]=selected.length;unknownCount++;}else ids[k]=mapped;
+ }
+ let n=selected.length+(unknownCount?1:0);
+ // 只有一個類別時仍允許觀看；此時該類別完整保留。
+ maskIds=ids;activeRegions=Array.from({length:n},(_,i)=>i);
+ for(let j=0;j<selected.length;j++){
+   const g=semantic.groups[selected[j].i];NAMES[j]=g.name;PROFILE_INDEX[j]=9;axesByRegion[j]=AXES_50[selected[j].i].slice();
+   for(const word of Object.keys(DEFAULT_REL))REL[word][j]=SCENE_SCORE[selected[j].i][word];
+ }
+ if(unknownCount){
+   const j=selected.length;NAMES[j]='其他／尚未辨識';PROFILE_INDEX[j]=9;axesByRegion[j]=[0,0,0,0];
+   for(const word in DEFAULT_REL)REL[word][j]=0;
+ }
+ for(let j=n;j<10;j++){
+   NAMES[j]='未使用';PROFILE_INDEX[j]=9;axesByRegion[j]=[0,0,0,0];
+   for(const word in DEFAULT_REL)REL[word][j]=0;
+ }
+ auditSource='SegFormer 語意分割＋50 類預設傾向＋實際面積評分（非動態 AI 計分）';window.__segFormerV43Results={regions:n,names:activeRegions.map(i=>NAMES[i]),counts:selected.map(g=>g.count),unclassified:unknownCount};
+ frames=[];selectedObject=0;editingZone=0;segmentationReady=true;showMask=true;$('showMask').checked=true;initFocusBounds();restart();showSegmentationLegend();
+ return {regions:n,named:selected.length,other:unknownCount};
+}
+$('mobileDemo').onclick=()=>{if(!ready)return;pause();if(editMode)setEditor(false);roughRegions();segmentationReady=true;showMask=true;$('showMask').checked=true;axesByRegion=AXES_SAMPLE.map(x=>x.slice());auditSource='示範模式（非 AI 分割）';statusAI('已切換示範模式：使用十個粗略區域，只供測試五次選擇和偏移，不代表 AI 辨認結果。');restart();showSegmentationLegend();};
+$('aiSegment').onclick=async()=>{
+ if(aiBusy||!ready||!original)return;
+ const myPhoto=photoVersion;aiBusy=true;$('aiSegment').disabled=true;$('aiSegment').textContent='SegFormer 分割中…';
+ try{
+   pause();if(editMode)setEditor(false);
+   statusAI('正在載入 SegFormer 並進行語意分割，首次使用需要連網下載模型…');
+   const semantic=await classifySceneBackground(myPhoto);
+   if(myPhoto!==photoVersion||!semantic)return;
+   const result=commitSemantic(semantic);
+   statusAI('SegFormer 完成：在 50 類字典中辨認 '+result.named+' 種有效類別（最多顯示 9 類＋其他），共 '+result.regions+' 個可排序區域；各區域依累積分數換算清晰度，不再按名次強制完整保留。'+(result.other?'其餘像素統一列為「其他／尚未辨識」。':'')+' 已顯示彩色分類範圍；可取消勾選觀看原圖，揭示後會自動隱藏遮罩。');
+ }catch(error){console.error('SegFormer segmentation failed',error);
+   segmentationReady=false;setSelectionAvailability();statusAI('AI 無法完成辨識：'+String(error?.message||error)+'。如需測試互動可使用非 AI 的示範分區。');}
+ finally{aiBusy=false;$('aiSegment').disabled=false;$('aiSegment').textContent='✦ SegFormer 自動分類';}
+};
+
+image.onload=()=>{imageOK=true;init()};maskImage.onload=()=>{maskOK=true;init()};image.onerror=maskImage.onerror=()=>{document.getElementById('chooseStatus').textContent='照片載入失敗，請重新開啟此檔案。'};
+// 不載入示範照片：使用者上傳照片才初始化。
+updateChoices();
+</script></body></html>
